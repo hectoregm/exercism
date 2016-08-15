@@ -3,33 +3,32 @@
 namespace bob {
   std::string hey(std::string const& text) {
     std::regex blank(" ");
-    std::string silence = regex_replace(text, blank, "");
+    std::string str = regex_replace(text, blank, "");
 
-    if (silence.empty())
+    // If empty only had silence
+    if (str.empty())
       return "Fine. Be that way!";
 
-
-    std::regex num("[0-9 ,?]");
-    std::string result = regex_replace(text, num, "");
-
-    std::string upper_case = result;
-    for (auto &c : upper_case) c = toupper(c);
-
-    bool numbers = false;
-    bool yelling = false;
-    if (result.empty()) {
-      numbers = true;
-    } else if (result.compare(upper_case) == 0) {
-      yelling = true;
-    }
-
-    char last_char = boost::trim_right_copy(text).back();
+    // Check last char if ? it's a possible question
+    char last_char = str.back();
     bool question = false;
     if (last_char == '?') {
       question = true;
+      str.pop_back();
     }
 
-    if (yelling && !numbers) {
+    // Remove numbers and upcase all other chars
+    std::regex num("[0-9,]");
+    std::string no_numbers = regex_replace(str, num, "");
+    std::string upper_case = no_numbers;
+    for (auto &c : upper_case) c = toupper(c);
+
+    bool yelling = false;
+    if (!no_numbers.empty() && no_numbers.compare(upper_case) == 0) {
+      yelling = true;
+    }
+
+    if (yelling) {
       return "Whoa, chill out!";
     }
 
