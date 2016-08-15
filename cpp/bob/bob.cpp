@@ -2,8 +2,15 @@
 
 namespace bob {
   std::string hey(std::string const& text) {
-    std::regex reg1("[0-9 ,?]");
-    std::string result = regex_replace(text, reg1, "");
+    std::regex blank(" ");
+    std::string silence = regex_replace(text, blank, "");
+
+    if (silence.empty())
+      return "Fine. Be that way!";
+
+
+    std::regex num("[0-9 ,?]");
+    std::string result = regex_replace(text, num, "");
 
     std::string upper_case = result;
     for (auto &c : upper_case) c = toupper(c);
@@ -16,7 +23,7 @@ namespace bob {
       yelling = true;
     }
 
-    char last_char = text.back();
+    char last_char = boost::trim_right_copy(text).back();
     bool question = false;
     if (last_char == '?') {
       question = true;
